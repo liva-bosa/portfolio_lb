@@ -2,33 +2,75 @@
 <html>
 <head>
 <title>Portfolio HOME page</title>
+
 </head>
-<body>
+<style>
+button{
+  border-style: outset;
+align-items: center;
+}
 
-<button> <a href="#C1" style="color:blueviolet;">Par mani </a> </button>
-<button> <a href="#C2" style="color:green;">GitHub</a> </button>
-<button> <a href="#C3" style="color:crimson;">Saziņa ar mani</a> </button>
+a{
 
-<hr>
-<h1 id="C1" style="color:blueviolet;">Par mani</h1>
+}
+
+body {
+  font: arial;
+  text-align: center;
+}
+h1 {
+  
+  
+}
+.topnav {
+  overflow: hidden;
+  background-color: maroon;
+}
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+</style>
+<body >
+<div class="topnav">
+  <button> <a href="#C1" style="color:rgb(84, 2, 161);">Par mani </a> </button>
+  <button> <a href="#C2" style="color:rgb(109, 1, 91);">GitHub</a> </button>
+  <button> <a href="#C3" style="color:rgb(130, 3, 29);">Saziņa ar mani</a> </button>
+</div>
+<br>
+<h1 id="C1" style="color:rgb(84, 2, 161);">Par mani</h1>
 <p>Apraksts par mani</p>
+<br>
 
 <hr>
-<h1 id="C2" style="color:green;">GitHub</h1>
+
+<br>
+<h1 id="C2" style="color:rgb(109, 1, 91);">GitHub</h1>
 <p>šeit būs pieejama saite uz GitHub repozitoriju kur var atrast manu failu vēsturi</p>
 <a href="https://github.com/liva-bosa/portfolio_lb.git">GitHub repozitoria</a>
+<br>
 
 <hr>
-<h1 id="C3" style="color:crimson;">Saziņa</h1>
+
+<br>
+<h1 id="C3" style="color:rgb(130, 3, 29);">Saziņa</h1>
 <p>Ja Jūs vēlaties sazināties ar mani ievadiet savu e-pastu un ziņu</p>
-<form action="" target="_blank">
+<form Action="mailto:bosaliva9@gmail.com" METHOD="POST">
     <label for="email">E-pasts:</label><br>
     <input type="email" id="email" name="email"pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="Invalid email address" required ><br>
     <label for="message">Ziņa:</label><br>
     <textarea name="message" rows="10" cols="30" required></textarea><br><br>
     <input type="submit" value="Sūtīt">
   </form> 
-
 
 </body>
 </html>
