@@ -2,7 +2,6 @@
 <html>
 <head>
 <title>Portfolio HOME page</title>
-  <!--<link rel="stylesheet" href="tooplate-style.css">-->
 </head>
 <style>
 button{
@@ -236,7 +235,7 @@ textarea {
         <header>
           <h1 id="C1" >Par mani</h1>
         </header>
-        <p>Apraksts par mani</p>
+        <p>es esmu Līva Boša, RTU Inženierzinātņu vidusskolas skolniece. </p>
         <br>
       </div>
     </div>
@@ -252,7 +251,7 @@ textarea {
         <h1 id="C3">Saziņa</h1>
       </header>
       <p>Ja Jūs vēlaties sazināties ar mani ievadiet savu e-pastu un ziņu</p>
-      <form Action="mailto:bosaliva9@gmail.com" METHOD="POST">
+      <form method="POST" action="portfolio.php">
         <div class="tm-form-group">
           <input type="email" id="email" name="email" class="form-control" placeholder="E-pasts" required/>
         </div>
@@ -284,5 +283,34 @@ textarea {
     </div>
 
   </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            
+            fetch('portfolio.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    form.reset();
+                } else {
+                    alert(data.errors.join('\n'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Notika kļūda. Lūdzu, mēģiniet vēlreiz.');
+            });
+        });
+    });
+    </script>
 </body>
 </html>
