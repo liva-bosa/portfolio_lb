@@ -348,12 +348,34 @@ textarea {
 
       if (userAnswer === correctAnswer) {
           // CAPTCHA is correct
-          console.log('Form data:', {
-              email: email,
+          emailjs.init("37Zk2vB5_SF7pV1Fu"); 
+
+          const form = document.querySelector('form');
+
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            const templateParams = {
+              from_email: email,
               message: message
-          });
-          
-          
+            };
+
+            emailjs.send('service_eqt20ra', 'template_96jhzai', templateParams)
+              .then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+                alert('Ziņa nosūtīta veiksmīgi!');
+                form.reset(); // Clear the form
+                this.reset();
+                generateCaptcha(); // Generate new CAPTCHA after successful submission
+              }, function(error) {
+                console.log('FAILED...', error);
+                alert('Kļūda sūtot ziņu. Lūdzu, mēģiniet vēlreiz.');
+              });
+      
+            });     
       } else {
           alert('Nepareiza CAPTCHA atbilde. Lūdzu, mēģiniet vēlreiz.');
           document.getElementById('captcha-answer').value = '';
@@ -361,39 +383,7 @@ textarea {
       }
   });
 
-  // Initialize EmailJS with your public key
-  emailjs.init("37Zk2vB5_SF7pV1Fu"); // Replace with your actual public key
-
-// Get the form element
-const form = document.querySelector('form');
-
-// Add submit event listener to the form
-form.addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent the default form submission
-
-    // Get the form data
-    const email = document.getElementById('email').value;
-    const message = document.getElementById('message').value;
-
-    // Prepare the email parameters
-    const templateParams = {
-        from_email: email,
-        message: message
-    };
-
-    // Send the email using EmailJS
-    emailjs.send('service_eqt20ra', 'template_96jhzai', templateParams)
-        .then(function(response) {
-            console.log('SUCCESS!', response.status, response.text);
-            alert('Ziņa nosūtīta veiksmīgi!');
-            form.reset(); // Clear the form
-            this.reset();
-          generateCaptcha(); // Generate new CAPTCHA after successful submission
-        }, function(error) {
-            console.log('FAILED...', error);
-            alert('Kļūda sūtot ziņu. Lūdzu, mēģiniet vēlreiz.');
-        });
-});
+  
 
 </script>
 </body>
