@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Portfolio HOME page</title>
+  <title>Portfolio HOME page</title>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <style>
 button{
@@ -219,6 +220,27 @@ textarea {
     bottom: -25px;
   }
 }
+
+.captcha-container {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #958ec0;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+}
+
+#captcha-question {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 10px;
+    border-radius: 4px;
+}
+
+#captcha-answer {
+    width: 150px;
+    padding: 10px;
+    margin-top: 10px;
+}
 </style>
 <body class="tm-bg-dark" >
   <div class="topnav">
@@ -251,17 +273,20 @@ textarea {
         <h1 id="C3">Saziņa</h1>
       </header>
       <p>Ja Jūs vēlaties sazināties ar mani ievadiet savu e-pastu un ziņu</p>
-      <form method="POST" action="portfolio.php">
+      <form method="POST" action="portfolio.js">
         <div class="tm-form-group">
           <input type="email" id="email" name="email" class="form-control" placeholder="E-pasts" required/>
         </div>
         <div class="tm-form-group">
           <textarea rows="5" id="message" name="message" class="form-control" placeholder="Ziņa" required></textarea>
         </div>
+        <div class="tm-form-group captcha-container">
+          <label id="captcha-question" style="color: #333333; background-color: #ffffff; padding: 10px; display: inline-block;"></label>
+          <input type="number" id="captcha-answer" name="captcha" class="form-control" placeholder="Ievadiet atbildi" required style="width: 150px; margin-top: 10px;"/>
+      </div>
         <div class="tm-text-right">
           <button type="submit" class="tm-btn">Sūtīt</button>
         </div>
-
       </form> 
       <br>
     </div>
@@ -272,8 +297,8 @@ textarea {
 
     <div class="item tm-block-right tm-bg-primary-dark tm-text-white tm-block tm-block-wider tm-block-pad " data-desktop-seq-no="5" data-mobile-seq-no="3">
         <br>
-        <h1 id="C2">GitHub</h1>
-        <p>šeit ir pieejama saite uz <a href="https://github.com/liva-bosa/portfolio_lb.git">GitHub repozitoriju</a> kur var atrast manu failu vēsturi</p>
+        <h1 id="C2">Projekti</h1>
+        <p>šeit ir pieejama saite uz <a href="https://github.com/liva-bosa/portfolio_lb.git">GitHub repozitoriju</a> kur var atrast man projektu</p>
         <br>
         <br>
     </div>
@@ -283,34 +308,93 @@ textarea {
     </div>
 
   </main>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.querySelector('form');
-        
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(form);
-            
-            fetch('portfolio.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    form.reset();
-                } else {
-                    alert(data.errors.join('\n'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Notika kļūda. Lūdzu, mēģiniet vēlreiz.');
-            });
+<script>
+  let correctAnswer = 0;
+
+  // Function to generate random math problem
+  function generateCaptcha() {
+      const num1 = Math.floor(Math.random() * 10) + 1;
+      const num2 = Math.floor(Math.random() * 10) + 1;
+      const operations = ['+', '-', '*'];
+      const operation = operations[Math.floor(Math.random() * operations.length)];
+      
+      let question = `${num1} ${operation} ${num2} = ?`;
+      
+      switch(operation) {
+          case '+':
+              correctAnswer = num1 + num2;
+              break;
+          case '-':
+              correctAnswer = num1 - num2;
+              break;
+          case '*':
+              correctAnswer = num1 * num2;
+              break;
+      }
+      
+      document.getElementById('captcha-question').textContent = question;
+  }
+
+  // Generate initial CAPTCHA
+  generateCaptcha();
+
+  // Form submission handling
+  document.querySelector('form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const userAnswer = parseInt(document.getElementById('captcha-answer').value);
+      const email = document.getElementById('email').value;
+      const message = document.getElementById('message').value;
+
+      if (userAnswer === correctAnswer) {
+          // CAPTCHA is correct
+          console.log('Form data:', {
+              email: email,
+              message: message
+          });
+          
+          
+      } else {
+          alert('Nepareiza CAPTCHA atbilde. Lūdzu, mēģiniet vēlreiz.');
+          document.getElementById('captcha-answer').value = '';
+          generateCaptcha(); // Generate new CAPTCHA after failed attempt
+      }
+  });
+
+  // Initialize EmailJS with your public key
+  emailjs.init("37Zk2vB5_SF7pV1Fu"); // Replace with your actual public key
+
+// Get the form element
+const form = document.querySelector('form');
+
+// Add submit event listener to the form
+form.addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    // Get the form data
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+
+    // Prepare the email parameters
+    const templateParams = {
+        from_email: email,
+        message: message
+    };
+
+    // Send the email using EmailJS
+    emailjs.send('service_eqt20ra', 'template_96jhzai', templateParams)
+        .then(function(response) {
+            console.log('SUCCESS!', response.status, response.text);
+            alert('Ziņa nosūtīta veiksmīgi!');
+            form.reset(); // Clear the form
+            this.reset();
+          generateCaptcha(); // Generate new CAPTCHA after successful submission
+        }, function(error) {
+            console.log('FAILED...', error);
+            alert('Kļūda sūtot ziņu. Lūdzu, mēģiniet vēlreiz.');
         });
-    });
-    </script>
+});
+
+</script>
 </body>
 </html>
